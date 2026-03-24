@@ -1,0 +1,22 @@
+<div class="carousel-container">
+  
+  <button class="carousel-btn prev" (click)="prevSlide()" [disabled]="currentIndex === 0"> ❮ </button>
+
+  <div class="carousel">
+    <div class="carousel-items" [style.transform]="'translateX(' + translateX + 'px)'">
+      
+      @for (game of games; track game.id) {
+        <div class="module">
+          <a [href]="'/game/' + game.id">
+            <img [src]="game.imageUrl" [alt]="game.title" class="item">
+          </a>
+        </div>
+      } @empty {
+        <p style="color: white; padding: 20px;">No hay videojuegos para mostrar.</p>
+      }
+
+    </div>
+  </div>
+
+  <button class="carousel-btn next" (click)="nextSlide()" [disabled]="currentIndex >= games.length - itemsToShow"> ❯ </button>
+</div>

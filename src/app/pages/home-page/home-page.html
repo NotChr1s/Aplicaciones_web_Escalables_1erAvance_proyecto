@@ -1,0 +1,14 @@
+
+<body>
+  <h1>Bienvenido a MY GAMING LIST</h1>
+  <h1>Haz tu coleccion personal de videojuegos en un solo lugar</h1>
+
+  <app-serach></app-serach>
+
+  <h1 id="select">Juegos Recomendados</h1>
+  <app-carousel [games]="juegosRecomendados()"></app-carousel>
+
+  <h1 id="select">Por lanzarse</h1>
+  <app-carousel [games]="juegosPorLanzar()"></app-carousel>
+</body>
+

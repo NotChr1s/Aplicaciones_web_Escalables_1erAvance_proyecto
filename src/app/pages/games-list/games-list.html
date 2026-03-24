@@ -1,0 +1,41 @@
+<article class="container">
+  <div class="tabs">
+    <button [class.active]="activeTab() === 'Todos'" (click)="setActive('Todos')">Todos</button>
+    <button [class.active]="activeTab() === 'Jugando'" (click)="setActive('Jugando')">Jugando</button>
+    <button [class.active]="activeTab() === 'Finalizado'" (click)="setActive('Finalizado')">Finalizado</button>
+    <button [class.active]="activeTab() === 'Abandonado'" (click)="setActive('Abandonado')">Abandonado</button>
+    <button [class.active]="activeTab() === 'Por jugar'" (click)="setActive('Por jugar')">Por jugar</button>
+  </div>
+
+  <div class="list-container">
+    <table>
+      <thead>
+        <tr>
+          <th class="th-num">#</th>
+          <th class="th-img">Imagen</th>
+          <th>Nombre</th>
+          <th class="th-scr">Calificación</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (game of filteredGames; track game.id; let i = $index) {
+          <tr>
+            <td class="td-num">{{ i + 1 }}</td>
+            <td><img [src]="game.image" [alt]="game.name" class="game-image"></td>
+            <td>
+              {{ game.name }} 
+              <a [routerLink]="['/game/', game.id]" class="edit-link">editar</a>
+            </td>
+            <td class="td-scr">{{ game.score }}</td>
+          </tr>
+        } @empty {
+          <tr>
+            <td colspan="4" style="text-align: center; padding: 20px;">
+              No hay juegos para mostrar.
+            </td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+</article>

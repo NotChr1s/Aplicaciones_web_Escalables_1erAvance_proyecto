@@ -1,0 +1,43 @@
+<article class="container">
+  <div class="profile">
+    
+    <div class="profile-section">
+      <div class="profile-pic">
+        <img [src]="profileImage" alt="Foto de perfil" id="profileImage" class="circular-preview">
+        <label for="fileInput" class="upload-btn">Seleccionar nueva foto</label>
+        <input type="file" id="fileInput" (change)="onFileSelected($event)" accept="image/*" hidden>
+      </div>
+    </div>
+
+    <form (submit)="saveChanges()" class="info-section">
+      <h2>Configurar cuenta</h2>
+      
+      <label>Nuevo Nombre de usuario:</label>
+      <input type="text" name="username" [(ngModel)]="username" required>
+
+      <label>Nuevo Correo Electrónico:</label>
+      <input type="email" name="email" [(ngModel)]="email" required>
+
+      <label>Nueva Contraseña:</label>
+      <input [type]="showPassword ? 'text' : 'password'" name="password" [(ngModel)]="password">
+
+      <div class="checkbox-wrapper">
+        <input type="checkbox" id="show-password" (change)="togglePassword()">
+        <label for="show-password">Mostrar contraseña</label>
+      </div>
+
+      <label for="confirm-password">Confirmar Contraseña:</label>
+      <input type="password" name="confirmPassword" [(ngModel)]="confirmPassword">
+      
+      @if (confirmPassword !== '' && password !== confirmPassword) {
+        <p class="error-message">Las contraseñas no coinciden.</p>
+      }
+
+      <div class="button-group">
+        <button type="submit" id="saveChanges">Guardar Cambios</button>
+        <button type="button" class="delete-btn" (click)="deleteAccount()">Eliminar Cuenta</button>
+      </div>
+    </form>
+
+  </div>
+</article>

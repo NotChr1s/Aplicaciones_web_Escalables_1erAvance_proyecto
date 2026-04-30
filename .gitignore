@@ -4,6 +4,7 @@
 **/.angular/
 **/dist/
 **/.env
+
 # --- Angular (Específico del Front) ---
 **/Aplicaciones_web_Escalables_1erAvance_proyecto/.angular/
 **/Aplicaciones_web_Escalables_1erAvance_proyecto/dist/

@@ -1,0 +1,86 @@
+<article class="container">
+  @if(game(); as g) {
+    <div class="game-card">
+
+      <div class="image-section">
+        <img [src]="g.imageUrl" [alt]="g.title" class="game-poster">
+      </div>
+
+      <div class="game-info">
+        <h2>{{ g.title }}</h2>
+
+        <div class="stats-grid">
+          <p><strong>IGN:</strong> {{ g.ignScore }}</p>
+          <p><strong>Duración:</strong> {{ g.duration }} horas</p>
+          <p><strong>Géneros:</strong> {{ g.genres.join(', ') }}</p>
+          <p><strong>Desarrolladores:</strong> {{ g.developers }}</p>
+          <p><strong>Editores:</strong> {{ g.editors }}</p>
+          <p><strong>Plataformas:</strong> {{ g.platforms.join(', ') }}
+        </div>
+
+        <div class="description">
+          <strong>Descripción:</strong>
+          <p>{{ g.description }}</p>
+        </div>
+
+        <div class="action-buttons">
+          @if (!isAdded()) {
+            <button class="add-btn" (click)="addToList()">Añadir a la lista</button>
+          } @else {
+            <select class="status-select">
+              <option value="playing">Jugando</option>
+              <option value="completed">Finalizado</option>
+              <option value="dropped">Abandonado</option>
+              <option value="plantoplay">Por jugar</option>
+            </select>
+            <button class="remove-btn" (click)="removeFromList()">Quitar de la lista</button>
+          }
+        </div>
+      </div>
+
+    </div>
+  } @else {
+    <p style="text-align: center; color: #777; padding: 50px;">
+      Juego no encontrado.
+    </p>
+  }
+  
+  <div class="comments-section">
+        <h3>Comentarios ({{ comments().length }})</h3>
+        <hr class="divider">
+
+        <form (submit)="postComment($event)" class="comment-form">
+        <img src="profile.jpg" alt="Tu avatar" class="user-avatar-small">
+        <div class="input-wrapper">
+            <textarea 
+            [(ngModel)]="newCommentText" 
+            name="newComment" 
+            placeholder="Escribe tu reseña o comentario..." 
+            required></textarea>
+            
+            @if (newCommentText.length > 0) {
+            <button type="submit" class="post-btn">Publicar</button>
+            }
+        </div>
+        </form>
+
+        <div class="comments-list">
+        @for (c of comments(); track c.date) {
+            <div class="comment-item">
+            <img [src]="c.avatar" [alt]="c.username" class="user-avatar-small">
+            <div class="comment-content">
+                <div class="comment-header">
+                <span class="comment-username">{{ c.username }}</span>
+                <span class="comment-date">{{ c.date | date:'shortDate' }}</span>
+                </div>
+                <p class="comment-text">{{ c.text }}</p>
+            </div>
+            </div>
+        } @empty {
+            <p style="text-align: center; color: #777; padding: 20px;">
+            Sin comentarios. Agrega uno.
+            </p>
+        }
+        </div>
+  </div>
+</article>

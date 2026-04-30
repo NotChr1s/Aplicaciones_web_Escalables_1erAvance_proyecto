@@ -1,0 +1,26 @@
+# --- Dependencias de Node (Front y Back) ---
+**/BackEnd/node_modules/
+**/Aplicaciones_web_Escalables_1erAvance_proyecto/node_modules/
+**/.angular/
+**/dist/
+**/.env
+# --- Angular (Específico del Front) ---
+**/Aplicaciones_web_Escalables_1erAvance_proyecto/.angular/
+**/Aplicaciones_web_Escalables_1erAvance_proyecto/dist/
+**/Aplicaciones_web_Escalables_1erAvance_proyecto/tmp/
+
+# --- Archivos de Entorno (¡MUY IMPORTANTE!) ---
+# Esto evita que subas tus contraseñas o llaves de DB a GitHub
+.env
+.env.local
+.env.*.local
+
+# --- Logs y Temporales ---
+*.log
+npm-debug.log*
+.DS_Store
+Thumbs.db
+
+# --- IDEs ---
+.vscode/
+.idea/

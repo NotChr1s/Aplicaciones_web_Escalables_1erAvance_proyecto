@@ -1,0 +1,107 @@
+:host {
+    display: block;
+    width: 100%;
+    padding-bottom: 50px;
+}
+
+.container {
+    margin-top: 2%;
+    font-family: Arial, Helvetica, sans-serif;
+    text-align: center;
+}
+
+/* --- PESTAÑAS --- */
+.tabs {
+    display: flex;
+    gap: 15px;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.tabs button {
+    padding: 10px 20px;
+    border: none;
+    background-color: #000000;
+    color: white;
+    cursor: pointer;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.tabs button:hover {
+    background-color: #363636;
+    transform: translateY(-2px);
+}
+
+
+.tabs .active {
+    background-color: rgb(139, 128, 128);
+    box-shadow: 0 0 10px rgba(8, 56, 119, 0.5);
+}
+
+.list-container {
+    width: 90%;
+    max-width: 1000px;
+    min-height: 60vh;
+    background-color: #fff6f6;
+    margin: auto;
+    padding: 20px;
+    border-radius: 8px;
+    color: rgb(0, 0, 0);
+    overflow-x: auto; 
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: #ffffff;
+}
+
+th, td {
+    border: 1px solid #9b9b9b;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background-color: rgb(0, 0, 0);
+    color: white;
+    text-transform: uppercase;
+    font-size: 14px;
+}
+
+/* --- IMAGENES Y COLUMNAS --- */
+.game-image {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+    border: 1px solid #555;
+}
+
+.th-num { width: 50px; text-align: center; }
+.th-img { width: 100px; text-align: center; }
+.th-scr { width: 80px; text-align: center; }
+
+.td-num, .td-scr {
+    text-align: center;
+    font-weight: bold;
+}
+
+.edit-link {
+    text-decoration: none;
+    color: #10adfc;
+    font-size: 12px;
+    margin-left: 10px;
+    padding: 2px 6px;
+    border: 1px solid #10adfc;
+    border-radius: 4px;
+    transition: 0.3s;
+}
+
+.edit-link:hover {
+    background-color: #10adfc;
+    color: white;
+}

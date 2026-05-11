@@ -13,12 +13,23 @@ export class GameService {
   public games = this._games.asReadonly();
 
   getRecommendedGames() {
-  return computed(() => this.games().filter(g => g.ignScore > 0));
-}
+    return computed(() => {
+      const filtered = this.games().filter(g => g.ignScore > 0);
+      return this.getRandomItems(filtered, 5);
+    });
+  }
 
-getUpcomingGames() {
-  return computed(() => this.games().filter(g => g.ignScore === 0));
-}
+  getUpcomingGames() {
+    return computed(() => {
+      const filtered = this.games().filter(g => g.ignScore === 0);
+      return this.getRandomItems(filtered, 5);
+    });
+  }
+
+  private getRandomItems(array: any[], count: number) {
+    const shuffled = [...array].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count);
+  }
 
   constructor() {
     this.fetchGames();

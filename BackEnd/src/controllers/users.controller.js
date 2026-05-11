@@ -1,5 +1,6 @@
 const { response, request } = require('express');
 const User = require('../models/user.model');
+const bcrypt = require('bcrypt');
 
 const getUsers = async (req = request, res = response) => {
     try {
@@ -47,16 +48,61 @@ const createUser = async (req = request, res = response) => {
     }
 };
 
-const updateUser = (req = request, res = response) => {
-    res.status(200).json({ 
-        message: 'Put  users' 
-    });
+const updateUser = async (req = request, res = response) => {
+    
+    const { id } = req.params;
+    console.log('ID recibido en el controlador:', id);
+    const { password, ...restData } = req.body;
+    console.log('Datos recibidos para actualización:', restData, 'Contraseña:', password);
+
+    try {
+        //volver a hashear la contraseña si se está actualizando
+        if (password && password.length > 0) {
+            restData.password = await bcrypt.hash(password, 10)
+        }
+
+        //actualizar el usuario y retornar el nuevo documento actualizado
+        const userUpdated = await User.findOneAndUpdate({ id: id }, restData, { new: true });
+
+        if (!userUpdated) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ 
+            message: 'User updated successfully',
+            user: userUpdated 
+        });
+
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            message: 'Error updating user',
+            error: error.message
+        });
+    }
 };
 
-const deleteUser = (req = request, res = response) => {
-    res.status(200).json({ 
-        message: 'Delete  users' 
-    });
+const deleteUser = async (req = request, res = response) => {
+    const { id } = req.params;
+
+    try {
+        const userDeleted = await User.findOneAndDelete({ id: id });
+
+        if (!userDeleted) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        res.status(200).json({ 
+            message: 'User deleted successfully',
+            id_deleted: id
+        });
+
+    } catch (error) {
+        res.status(500).json({
+            message: 'Error deleting user',
+            error: error.message
+        });
+    }
 };  
 
 module.exports = {

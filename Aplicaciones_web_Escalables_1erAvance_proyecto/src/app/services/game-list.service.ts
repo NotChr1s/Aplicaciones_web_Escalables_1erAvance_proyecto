@@ -1,39 +1,87 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { UserGame } from '../interfaces/userGame.interface';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class GameListService {
-  // Simulacion de BD de juegos en la lista del usuario
-  private _list = signal<UserGame[]>([
-    { id: 'G0001', userId: 'U0001', gameId: 'G0001', name: "Assassin's Creed Shadows", image: 'G0001.webp', score: 8, status: 'Jugando' },
-    { id: 'G0002', userId: 'U0001', gameId: 'G0003', name: "Avowed", image: 'G0003.jpg', score: 6, status: 'Por jugar' },
-    { id: 'G0003', userId: 'U0001', gameId: 'G0007', name: "INZOI", image: 'G0007.webp', score: 8, status: 'Finalizado' },
-    { id: 'G0004', userId: 'U0001', gameId: 'G0016', name: "Super Mario 64", image: 'G0016.jpg', score: 10, status: 'Finalizado' },
-    { id: 'G0005', userId: 'U0001', gameId: 'G0017', name: "Assassin's Creed 2", image: 'G0017.jpg', score: 10, status: 'Finalizado' },
-    { id: 'G0006', userId: 'U0001', gameId: 'G0018', name: "The Witcher 3: Wild Hunt", image: 'G0018.avif', score: 9, status: 'Abandonado' },
-  ]);
+  private http = inject(HttpClient);
+
+  private _list = signal<UserGame[]>([]);
 
   public list = this._list.asReadonly();
 
-  // Obtener la lista de juegos para un usuario específico
+  private authService = inject(AuthService);
+  private apiUrl = 'http://localhost:8081/api/gameslist';
+
+  constructor() {
+    if(this.authService.isLoggedIn()){
+      const userId = this.authService.currentUser()?.id;
+      if(userId){
+        this.getListForUser(userId); 
+      }
+    }
+  }
+
+  private getHeaders() {
+    return new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`
+    });
+  }
+
+  // Obtener la lista de juegos 
   getListForUser(userId: string) {
-    return this.list().filter(game => game.userId === userId);
+    this.http.get<UserGame[]>(`${this.apiUrl}/${userId}`, { headers: this.getHeaders() })
+      .subscribe({
+        next: (response) => this._list.set(response),
+        error: (err) => console.error('Error al obtener lista:', err)
+    });
   }
   
   // Agregar un juego a la lista del usuario
   addGameToList(game: UserGame) {
-    this._list.update(games => [...games, game]);
+    this.http.post<UserGame>(this.apiUrl, game, { headers: this.getHeaders() }).subscribe({
+      next: (response) => {
+        const gameToSave = {
+          ...response,
+          gameId: String(response.gameId || game.gameId) 
+        };
+
+        this._list.update(games => [...games, gameToSave]);
+      },
+      error: (error) => console.log('Error al agregar:', error)
+    });
   }
 
   // Eliminar un juego de la lista del usuario
   removeGameFromList(gameId: string) {
-    this._list.update(games => games.filter(game => game.id !== gameId));
+    this.http.delete(`${this.apiUrl}/${gameId}`, { headers: this.getHeaders() }).subscribe({
+      next: () => {
+        this._list.update(games => games.filter(g => String(g.gameId) !== String(gameId)));
+      },
+      error: (error) => console.log('Error al eliminar:', error)
+    });
   }
 
   // Verificar si un juego ya está en la lista del usuario
   isInList(gameId: string) {
     return this.list().some(game => game.gameId === gameId);
   }
+
+  updateGameInList(updatedGame: UserGame) {
+    this.http.put<UserGame>(this.apiUrl, updatedGame, { headers: this.getHeaders() }).subscribe({
+      next: (response) => {
+        const gameToSave = {
+          ...response,
+          gameId: String(response.gameId || updatedGame.gameId) 
+        };
+
+        this._list.update(games => [...games, gameToSave]);
+      },
+      error: (error) => console.log('Error al agregar:', error)
+    });
+  }
+
 }

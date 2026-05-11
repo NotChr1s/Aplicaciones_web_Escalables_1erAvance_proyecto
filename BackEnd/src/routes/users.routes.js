@@ -1,13 +1,14 @@
 const { Router } = require('express');
 const { createUser, getUsers, updateUser, deleteUser } = require('../controllers/users.controller');
 const router = Router();
+const verifyJWT = require('../middlewares/verifyJWT');
 
 router.get("/", getUsers);
 
 router.post("/", createUser);
 
-router.put("/", updateUser);
+router.put("/:id", [verifyJWT], updateUser);
 
-router.delete("/", deleteUser);
+router.delete("/:id", [verifyJWT], deleteUser);
 
 module.exports = router;

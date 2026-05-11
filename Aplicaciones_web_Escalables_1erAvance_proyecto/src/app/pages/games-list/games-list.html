@@ -1,10 +1,10 @@
 <article class="container">
   <div class="tabs">
     <button [class.active]="activeTab() === 'Todos'" (click)="setActive('Todos')">Todos</button>
-    <button [class.active]="activeTab() === 'Jugando'" (click)="setActive('Jugando')">Jugando</button>
-    <button [class.active]="activeTab() === 'Finalizado'" (click)="setActive('Finalizado')">Finalizado</button>
-    <button [class.active]="activeTab() === 'Abandonado'" (click)="setActive('Abandonado')">Abandonado</button>
-    <button [class.active]="activeTab() === 'Por jugar'" (click)="setActive('Por jugar')">Por jugar</button>
+    <button [class.active]="activeTab() === 'playing'" (click)="setActive('playing')">Jugando</button>
+    <button [class.active]="activeTab() === 'completed'" (click)="setActive('completed')">Finalizado</button>
+    <button [class.active]="activeTab() === 'dropped'" (click)="setActive('dropped')">Abandonado</button>
+    <button [class.active]="activeTab() === 'plantoplay'" (click)="setActive('plantoplay')">Por jugar</button>
   </div>
 
   <div class="list-container">
@@ -24,7 +24,7 @@
             <td><img [src]="game.image" [alt]="game.name" class="game-image"></td>
             <td>
               {{ game.name }} 
-              <a [routerLink]="['/game/', game.id]" class="edit-link">editar</a>
+              <a [routerLink]="['/game/', game.gameId]" class="edit-link">editar</a>
             </td>
             <td class="td-scr">{{ game.score }}</td>
           </tr>

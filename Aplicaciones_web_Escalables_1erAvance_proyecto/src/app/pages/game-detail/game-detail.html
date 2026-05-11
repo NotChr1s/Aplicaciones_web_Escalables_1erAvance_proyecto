@@ -24,20 +24,45 @@
         </div>
 
         <div class="action-buttons">
-          @if (!isAdded()) {
-            <button class="add-btn" (click)="addToList()">Añadir a la lista</button>
-          } @else {
-            <select class="status-select">
-              <option value="playing">Jugando</option>
-              <option value="completed">Finalizado</option>
-              <option value="dropped">Abandonado</option>
-              <option value="plantoplay">Por jugar</option>
-            </select>
-            <button class="remove-btn" (click)="removeFromList()">Quitar de la lista</button>
+          @if (!authService.isLoggedIn()) {
+            <button class="add-btn" (click)="notLoggedIn()">Añadir a la lista</button>
+          }@else{
+            @if (!isAdded()) {
+              <button class="add-btn" (click)="addToList()">Añadir a la lista</button>
+            } @else {
+              <select
+                #statusSelect
+                class="status-select"
+                [value]="currentStatus()" 
+                (change)="updateStatus(statusSelect.value)">
+                <option value="playing">Jugando</option>
+                <option value="completed">Finalizado</option>
+                <option value="dropped">Abandonado</option>
+                <option value="plantoplay">Por jugar</option>
+              </select>
+              <select
+                #scoreSelect
+                class="score-select"
+                [value]="currentStatusScore()" 
+                (change)="updateStatusScore(scoreSelect.value)">
+                <option value="0">0</option>
+                <option value="1">1</option>
+                <option value="2">2</option>
+                <option value="3">3</option>
+                <option value="4">4</option>
+                <option value="5">5</option>
+                <option value="6">6</option>
+                <option value="7">7</option>
+                <option value="8">8</option>
+                <option value="9">9</option>
+                <option value="10">10</option>
+              </select>
+              <button class="remove-btn" (click)="removeFromList()">Quitar de la lista</button>
+            }
           }
         </div>
       </div>
-
+  
     </div>
   } @else {
     <p style="text-align: center; color: #777; padding: 50px;">
@@ -46,26 +71,32 @@
   }
   
   <div class="comments-section">
-        <h3>Comentarios ({{ comments().length }})</h3>
+        <h3>Comentarios ({{ GameCommentService.comments().length }})</h3>
         <hr class="divider">
 
-        <form (submit)="postComment($event)" class="comment-form">
-        <img src="profile.jpg" alt="Tu avatar" class="user-avatar-small">
-        <div class="input-wrapper">
-            <textarea 
-            [(ngModel)]="newCommentText" 
-            name="newComment" 
-            placeholder="Escribe tu reseña o comentario..." 
-            required></textarea>
-            
-            @if (newCommentText.length > 0) {
-            <button type="submit" class="post-btn">Publicar</button>
-            }
-        </div>
-        </form>
+        @if(authService.isLoggedIn()) {
+          <form (submit)="postComment($event)" class="comment-form">
+          <img src="profile.jpg" alt="Tu avatar" class="user-avatar-small">
+          <div class="input-wrapper">
+              <textarea 
+              [(ngModel)]="newCommentText" 
+              name="newComment" 
+              placeholder="Escribe tu reseña o comentario..." 
+              required></textarea>
+              
+              @if (newCommentText.length > 0) {
+              <button type="submit" class="post-btn">Publicar</button>
+              }
+          </div>
+          </form>
+        } @else {
+          <p style="text-align: center; color: #777; padding: 20px;">
+            Inicia sesión para agregar un comentario.
+          </p>
+        }
 
         <div class="comments-list">
-        @for (c of comments(); track c.date) {
+        @for (c of GameCommentService.comments(); track c.date) {
             <div class="comment-item">
             <img [src]="c.avatar" [alt]="c.username" class="user-avatar-small">
             <div class="comment-content">

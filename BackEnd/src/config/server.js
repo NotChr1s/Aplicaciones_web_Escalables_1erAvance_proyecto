@@ -5,11 +5,14 @@ const connectDB = require('./database');
 class Server{
     constructor(){
         this.app = express();
-        this.port = process.env.PORT || 8081;
+        this.port = process.env.PORT;
+        
 
         this.gamesPath = '/api/games';
         this.usersPath = '/api/users';
         this.authPath = '/api/auth';
+        this.gamesListPath = '/api/gameslist';
+        this.gameCommentsPath = '/api/gamescomments';
 
         this.middlewares();
         this.routes();
@@ -21,6 +24,8 @@ class Server{
         this.app.use(this.gamesPath, require('../routes/games.routes'));
         this.app.use(this.usersPath, require('../routes/users.routes'));
         this.app.use(this.authPath, require('../routes/auth.routes'));
+        this.app.use(this.gamesListPath, require('../routes/gamesList.routes'));
+        this.app.use(this.gameCommentsPath, require('../routes/gamesComments.routes'));
 
         this.app.get('/', (req, res) => {
             res.json({ 
@@ -30,7 +35,8 @@ class Server{
     }
 
     middlewares(){
-        this.app.use(express.json());
+        this.app.use(express.json({limit: '10mb'}));
+         this.app.use(express.urlencoded({ limit: '50mb', extended: true }));
         this.app.use(cors());
     }
 

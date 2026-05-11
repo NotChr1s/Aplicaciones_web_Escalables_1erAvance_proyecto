@@ -1,8 +1,7 @@
 export interface GameComment {
-  user_id: string;
-  game_id: string; 
+  gameId: string; 
   username: string;
   avatar: string;
-  date: Date;
+  date: string;
   text: string;
 }

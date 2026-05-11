@@ -4,14 +4,18 @@ const User = require('../models/user.model');
 
 const verifyJWT = async ( req = request, res = response, next) => {
 
-    const token = req.header('Authorization');
+    const authHeader = req.header('Authorization');
 
     console.log('Verifying JWT...');
-    if (!token) {
+    if (!authHeader) {
         return res.status(401).json({
             message: 'No token provided'
         });
     }
+
+    const token = authHeader.startsWith('Bearer ') 
+    ? authHeader.split(' ')[1] 
+    : authHeader;
 
     try {
         const {name} = jwt.verify(token, process.env.SECRET_KEY);

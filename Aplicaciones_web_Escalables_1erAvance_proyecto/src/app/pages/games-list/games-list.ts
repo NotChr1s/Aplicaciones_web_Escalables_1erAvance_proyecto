@@ -1,7 +1,8 @@
 import { Component, inject, signal } from '@angular/core';
 import { UserGame } from "../../interfaces/userGame.interface";
-import { RouterLink} from "@angular/router";
+import { Router, RouterLink} from "@angular/router";
 import { GameListService } from '../../services/game-list.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-games-list',
@@ -13,19 +14,22 @@ export class GamesList {
  
   // Inyección de dependencias
   private GameListService = inject(GameListService);
-  myGames = signal<UserGame[]>([]);
+  private router = inject(Router);
+
   activeTab = signal<string>('Todos');
+  private authService = inject(AuthService);
   
-  // Se obtiene la lista de juegos del usuario al iniciar el componente
   ngOnInit(): void {
-    this.myGames.set(this.GameListService.getListForUser('U0001')); // simulacion de id de usuario
+    if(!this.authService.isLoggedIn()){
+      this.router.navigate(['/login']);
+    }
   }
 
   // funcion para filtrar los juegos segun la pestaña
   get filteredGames() {
     const tab = this.activeTab();
-    if (tab === 'Todos') return this.myGames();
-    return this.myGames().filter(game => game.status === tab);
+    if (tab === 'Todos') return this.GameListService.list();
+    return this.GameListService.list().filter(game => game.status === tab);
   }
 
   // Cambiar pestaña activa

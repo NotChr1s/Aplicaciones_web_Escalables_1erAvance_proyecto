@@ -1,5 +1,5 @@
 import { Component, computed, inject, signal } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { GameComment } from "../../interfaces/gameComment.interface";
@@ -7,6 +7,7 @@ import { GameService } from '../../services/game.service';
 import { GameCommentService } from '../../services/game-comment.service';
 import { GameListService } from '../../services/game-list.service';
 import { UserGame } from '../../interfaces/userGame.interface';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-game-detail',
@@ -18,8 +19,10 @@ export class GameDetail {
   // Inyecccion de dependencias
   private route = inject(ActivatedRoute);//Para obtener el ID del juego desde la URL
   private gameService = inject(GameService);//Para obtener los detalles del juego
-  private GameCommentService = inject(GameCommentService);// Para manejar los comentarios del juego
+  public GameCommentService = inject(GameCommentService);// Para manejar los comentarios del juego
   private GameListService = inject(GameListService);// Para manejar la lista de juegos del usuario (agregar o quitar)
+  public authService = inject(AuthService);// Para manejar la autenticacion del usuario (simulada en este caso)
+  private router = inject(Router);// Para redirigir al usuario a la pagina de login si no esta autenticado
 
   // Variables de estado
   private gameId = this.route.snapshot.paramMap.get('id');
@@ -28,23 +31,16 @@ export class GameDetail {
     return this.gameService.games().find(g => g.id.toString() === this.gameId);
   });
 
-
-  comments = signal<GameComment[]>([]);
-  myGames = signal<UserGame[]>([]);
-  
   // Computed para verificar si el juego ya está en la lista del usuario
   isAdded = computed(() => {
     const currentGame = this.game();// Obtenemos el juego actual
-    return currentGame ? this.myGames().some(g => g.gameId === currentGame.id) : false;// Verificamos si el juego actual está en la lista de juegos del usuario
+    if (!currentGame) return false;
+
+   return this.GameListService.list().some(g => String(g.gameId) === String(currentGame.id));// Verificamos si el juego actual está en la lista de juegos del usuario
   })
 
   ngOnInit(): void {
-    this.myGames.set(this.GameListService.getListForUser('U0001')); // simulacion de id de usuario => U0001
-    
-    // se busca el juego por ID desde el servicio
-    if (this.gameId) {
-      this.comments.set(this.GameCommentService.getCommentsForGame(this.gameId));
-    };
+    this.GameCommentService.getCommentsForGame(this.gameId!);// Obtenemos los comentarios para el juego actual al cargar la página
   }
 
   // funcion para publicar un nuevo comentario
@@ -56,21 +52,17 @@ export class GameDetail {
     if (this.newCommentText.trim() === '') return;//Validacion para evitar comentarios vacios
 
     const comment: GameComment = {
-      user_id: 'U0003', // ID de usuario simulado
-      game_id: this.gameId, // ID del juego actual
-      username: 'Israel', // Usuario actual simulado
-      avatar: 'profile.jpg',// imagen de perfil simulada
-      date: new Date(),// Fecha actual
+      gameId: this.gameId, // ID del juego actual
+      username: this.authService.currentUser()?.name || 'Usuario', // Usuario actual simulado
+      avatar: this.authService.currentUser()?.profilePicture || 'logo.png',// imagen de perfil simulada
+      date: new Date().toISOString(), // Fecha actual
       text: this.newCommentText // El texto del nuevo comentario
     };
 
     console.log('Nuevo comentario:', comment); // Verifica que el comentario se ha creado correctamente
 
     this.GameCommentService.addComment(comment);//Añade el comentario atraves del servicio
-
     //Actualizamos la lista de comentarios para ver el nuevo comentario agregado
-    const updatedComments = this.GameCommentService.getCommentsForGame(this.gameId);
-    this.comments.set(updatedComments);
     this.newCommentText = ''; // Limpia el input
 
   }
@@ -81,8 +73,8 @@ export class GameDetail {
     if (!currentGame) return;
     // Creamos un objeto UserGame con los detalles del juego actual para agregarlo a la lista del usuario
     const userGame: UserGame = {
-      id: currentGame.id,
-      userId: 'U0001',
+      id: crypto.randomUUID(), 
+      userId: this.authService.currentUser()?.id || 'U0001',
       gameId: currentGame.id,
       name: currentGame.title,
       image: currentGame.imageUrl,
@@ -92,7 +84,6 @@ export class GameDetail {
 
     // Agregamos el juego a la lista del usuario a traves del servicio
     this.GameListService.addGameToList(userGame);
-    this.updateMyGames();
   }
 
   // Función para el botón Quitar
@@ -100,11 +91,88 @@ export class GameDetail {
     const currentGame = this.game();
     if (!currentGame) return;
     this.GameListService.removeGameFromList(currentGame.id);
-    this.updateMyGames();
   }
 
-  // funcion para actualizar la lista de juegos del usuario despues de agregar o quitar un juego
-  updateMyGames() {
-    this.myGames.set(this.GameListService.getListForUser('U0001'));
+  notLoggedIn() {
+    this.router.navigate(['/login']);
+  }
+
+  currentStatus = computed(() => {
+    const currentGame = this.game();
+    if (!currentGame) return 'plantoplay';
+
+    const userGame = this.GameListService.list().find(
+      g => String(g.gameId) === String(currentGame.id)
+    );
+
+    if (userGame){
+      switch (userGame.status) {
+        case 'Por jugar':
+          return 'plantoplay';
+        case 'Jugando':
+          return 'playing';
+        case 'Finalizado':
+          return 'completed';
+        case 'Abandonado':
+          return 'dropped';
+        default:
+          return userGame.status;
+      }
+    }else{
+      return 'plantoplay';
+    }
+  });
+
+  updateStatus(newStatus: string) {
+    const statusTyped = newStatus as "Por jugar" | "Jugando" | "Finalizado" | "Abandonado";
+    const currentGame = this.game();
+
+    if (!currentGame) return;
+
+    // Buscamos el objeto completo
+    const userGame = this.GameListService.list().find(
+      g => String(g.gameId) === String(currentGame.id)
+    );
+
+    if (userGame) {
+      const updatedGame: UserGame = {
+        ...userGame,
+        status: statusTyped
+      };
+
+      this.GameListService.updateGameInList(updatedGame);
+    }
+  }
+
+  currentStatusScore = computed(() => {
+    const currentGame = this.game();
+    if (!currentGame) return 0;
+
+    const userGame = this.GameListService.list().find(
+      g => String(g.gameId) === String(currentGame.id)
+    );
+
+    return userGame ? userGame.score : 0;
+  });
+
+  updateStatusScore(newScore: string) {
+    const scoreTyped = parseInt(newScore);
+    const currentGame = this.game();
+
+    if (!currentGame) return;
+
+    // Buscamos el objeto completo
+    const userGame = this.GameListService.list().find(
+      g => String(g.gameId) === String(currentGame.id)
+    );
+
+    if (userGame) {
+      const updatedGame: UserGame = {
+        ...userGame,
+        score: scoreTyped
+      };
+
+      this.GameListService.updateGameInList(updatedGame);
+    }
   }
 }

@@ -2,17 +2,28 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { UserService } from '../../services/user.service';
+import { User } from '../../interfaces/user.interface';
 
 @Component({
   selector: 'app-sign-up',
-  imports: [FormsModule, CommonModule],
+  imports: [FormsModule, CommonModule,],
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.css',
 })
 export class SignUp {
   // Campos del formulario de registro
+  userData = {
+    name: '',
+    email: '',
+    password: '',
+    profilePicture: 'profile.jpg',
+    month : 'Enero',
+    day : 1,
+    year : 2026
+  }
+  // Campos del formulario de registro
   showPassword = false;
-  password = '';
   confirmPassword = '';
   // Listas para los select de fecha de nacimiento
   months: string[] = [
@@ -23,7 +34,7 @@ export class SignUp {
   days: number[] = Array.from({ length: 31 }, (_, i) => i + 1);
   years: number[] = Array.from({ length: 57 }, (_, i) => 2026 - i);
 
-  constructor(private router: Router) {}
+  constructor(private router: Router, private userService: UserService) {}
 
   // Alternar la visibilidad de la contraseña
   togglePassword() {
@@ -32,19 +43,35 @@ export class SignUp {
 
   // Validar que las contraseñas coincidan
   passwordsMatch(): boolean {
-    return this.password !== '' && 
+    return this.userData.password !== '' && 
            this.confirmPassword !== '' && 
-           this.password === this.confirmPassword;
+           this.userData.password === this.confirmPassword;
   }
 
   // funcion para manejar el envio del formulario de registro
   onRegister(event: Event) {
     event.preventDefault(); 
 
-    console.log('Formulario enviado con exito');
-    
-    alert('¡Te has registrado con exito!');
-    
-    this.router.navigate(['/login']);
+    if (this.passwordsMatch()) {
+      const newUser: User = {
+        id: crypto.randomUUID(), 
+        name: this.userData.name,
+        email: this.userData.email,
+        password: this.userData.password,
+        profilePicture: this.userData.profilePicture,
+        birth: `${this.userData.month} ${this.userData.day}, ${this.userData.year}`,
+        role: 'user'
+      };
+
+      this.userService.createUser(newUser).subscribe({
+        next: (response) => {
+          console.log('Usuario creado:', response);
+          this.router.navigate(['/login']);
+        },
+        error: (error) => {
+          console.error('Error al crear el usuario:', error);
+        }
+      });
+    }
   }
 }

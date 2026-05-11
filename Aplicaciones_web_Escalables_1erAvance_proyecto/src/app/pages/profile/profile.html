@@ -1,8 +1,8 @@
 <article class="container">
     <div class="profile">
-        <img src="profile.jpg" alt="Imagen de Perfil" class="circular-image">
+        <img [src]="authService.currentUser()?.profilePicture || 'logo.png'" alt="Imagen de Perfil" class="circular-image">
         
-        <h2 class="username">Israel</h2>
+        <h2 class="username">{{ authService.currentUser()?.name }}</h2>
 
         <div class="buttons">
             <button routerLink="/profile-management">

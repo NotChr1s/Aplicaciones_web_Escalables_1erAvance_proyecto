@@ -1,12 +1,12 @@
 footer {
     width: 100%;
-    background: #22212152;
+    background: #16181C;
     color: white;
-    margin-top: 40px;
+    margin-top: 100px;
 }
 .footer1 { width: 100%; max-width: 1200px; margin: auto; padding: 0px 20px 20px 20px; }
 .footer1 h1 { font-size: 32px; font-family: 'Montserrat', sans-serif; font-weight: 500; padding-bottom: 20px; padding-top: 10px;}
-.footer1 p { font-size: 14px; color: #000000; margin-top: 0px; font-family: 'Montserrat', sans-serif; font-weight: 400; }
+.footer1 p { font-size: 14px; color: #BADEFB; margin-top: 0px; font-family: 'Montserrat', sans-serif; font-weight: 400; }
 .footer2 { width: 100%; background: #101010; padding: 20px; font-family: 'Montserrat', sans-serif; font-weight: 400; }
 .footer3 { display: flex; justify-content: space-between; max-width: 1200px; margin: auto; padding-left: 20px; }
 .copyright { color: #c7c7c7; }

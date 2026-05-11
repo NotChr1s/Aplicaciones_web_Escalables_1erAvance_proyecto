@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const connectDB = require('./database');
 
 class Server{
     constructor(){
@@ -8,22 +9,29 @@ class Server{
 
         this.gamesPath = '/api/games';
         this.usersPath = '/api/users';
+        this.authPath = '/api/auth';
 
-        this.app.use(express.json());
-        this.app.use(cors());
+        this.middlewares();
         this.routes();
+        connectDB();
     }
 
     routes(){
 
         this.app.use(this.gamesPath, require('../routes/games.routes'));
         this.app.use(this.usersPath, require('../routes/users.routes'));
+        this.app.use(this.authPath, require('../routes/auth.routes'));
 
         this.app.get('/', (req, res) => {
             res.json({ 
                 message: 'Hello World!' 
             });
         });
+    }
+
+    middlewares(){
+        this.app.use(express.json());
+        this.app.use(cors());
     }
 
     listen(){

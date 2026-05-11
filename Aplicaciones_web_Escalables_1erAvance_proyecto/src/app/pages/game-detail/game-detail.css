@@ -14,11 +14,11 @@
 
 .game-card {
   display: flex;
-  background-color: #ffffff;
+  background-color: #232222;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
   overflow: hidden;
-  border: 1px solid #eeeeee;
+  border: 1px solid #414242;
   width: 100%;
 }
 
@@ -37,13 +37,13 @@
   flex: 2;
   padding: 40px;
   text-align: left;
-  color: #333;
+  color: #ffffff;
 }
 
 h2 {
   font-size: 32px;
   margin-bottom: 20px;
-  color: #000;
+  color: #BADEFB;
   font-family: Arial, Helvetica, sans-serif;
 }
 
@@ -56,10 +56,10 @@ h2 {
 .description {
   margin: 25px 0;
   line-height: 1.6;
-  color: #555;
+  color: #ffffffcb;
+  font-family: 'Courier New', Courier, monospace;
 }
 
-/* BOTONES */
 .action-buttons {
   display: flex;
   gap: 15px;
@@ -92,29 +92,29 @@ h2 {
   border: 1px solid #ddd;
 }
 
-/* COMENTARIOS */
 .comments-section {
   width: 100%;
   max-width: 1100px; 
   margin-top: 40px;
-  background-color: #ffffff;
+  background-color: #232222;
   padding: 30px;
   border-radius: 12px;
   box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05); 
-  border: 1px solid #eeeeee;
-  color: #333;
+  border: 1px solid #414242;
+  color: #ffffff;
   text-align: left;
 }
 
 .comments-section h3 {
   font-size: 24px;
-  color: #000;
+  color: #ffffff;
   margin-bottom: 15px;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .divider {
   border: 0;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid #232222;
   margin-bottom: 25px;
 }
 
@@ -130,7 +130,7 @@ h2 {
   height: 45px;
   border-radius: 50%;
   object-fit: cover;
-  border: 2px solid #10adfc;
+  border: 2px solid #BADEFB;
 }
 
 .input-wrapper {
@@ -146,8 +146,8 @@ h2 {
   padding: 15px;
   border-radius: 8px;
   border: 1px solid #ddd;
-  background-color: #f8f9fa; 
-  color: #333;
+  background-color: #4f5052; 
+  color: #ffffff;
   font-family: inherit;
   font-size: 14px;
   min-height: 80px;
@@ -162,8 +162,8 @@ h2 {
 }
 
 .post-btn {
-  background-color: #10adfc;
-  color: white;
+  background-color: #BADEFB;
+  color: rgb(85, 85, 85);
   border: none;
   padding: 8px 18px;
   border-radius: 5px;
@@ -177,7 +177,6 @@ h2 {
   background-color: #0c85c1;
 }
 
-/* Lista de comentarios */
 .comments-list {
   display: flex;
   flex-direction: column;
@@ -189,20 +188,18 @@ h2 {
   gap: 15px;
   align-items: flex-start;
   padding-bottom: 15px;
-  border-bottom: 1px solid #f1f1f1; 
 }
 
-/* El ultimo comentario no lleva la linea de abajo */
 .comment-item:last-child {
   border-bottom: none;
 }
 
 .comment-content {
   flex: 1;
-  background-color: #fbfbfb;
+  background-color: #000000;
   padding: 15px;
   border-radius: 8px;
-  border: 1px solid #eee;
+  border: 1px solid #2c2c2c;
 }
 
 .comment-header {
@@ -213,18 +210,21 @@ h2 {
 
 .comment-username {
   font-weight: bold;
-  color: #000;
+  color: #ffffff;
   font-size: 14px;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .comment-date {
-  color: #999;
+  color: #ffffff;
   font-size: 12px;
+  font-family: 'Courier New', Courier, monospace;
 }
 
 .comment-text {
   font-size: 14px;
   line-height: 1.5;
-  color: #555;
+  color: #BADEFB;
   margin: 0;
+  font-family: 'Courier New', Courier, monospace;
 }

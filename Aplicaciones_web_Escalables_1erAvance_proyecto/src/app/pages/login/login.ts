@@ -1,23 +1,28 @@
-import { Component } from '@angular/core';
-import { Router } from "@angular/router";
+import { Component, inject } from '@angular/core';
+import { RouterLink } from "@angular/router";
+import { AuthService } from '../../services/auth.service';
+import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
+
 
 @Component({
   selector: 'app-login',
-  imports: [],
+  standalone: true,
+  imports: [ReactiveFormsModule, RouterLink],
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
 export class Login {
+  private fb = inject(FormBuilder);
+  public authService = inject(AuthService);
 
-  constructor(private router: Router) {}
+  loginForm = this.fb.group({
+    name: ['', Validators.required],
+    password: ['', Validators.required]
+  });
 
-  onLogin(event: Event) {
-    event.preventDefault();
-    
-    console.log(" iniciando sesion...");
-
-    alert("¡Bienvenido!");
-    this.router.navigate(['/']); 
+  onLogin() {
+    if (this.loginForm.valid) {
+      this.authService.login(this.loginForm.value.name!, this.loginForm.value.password!);
+    }
   }
-
 }

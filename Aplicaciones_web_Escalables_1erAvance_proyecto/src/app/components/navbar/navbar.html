@@ -1,16 +1,26 @@
-<nav class="navbar">
+<nav class="navbar" [ngClass]="{'nav-transparent': isTransparent, 'nav-dark': !isTransparent}">
 	<div>
 		<a href="/home"><img class="primary-icon" src="logo.png"></a>
 	</div>
 	<ul class="nav-list" id="navi-list">
-		<li class="list-item">
-			<a href="/home">Inicio</a>
-		</li>
-		<li class="list-item">
+
+		@if (authService.isLoggedIn()) {
+			<li class="list-item">
+				<a href="/profile">Mi Perfil</a>
+			</li>
+			<li class="list-item">
+				<a href="/home" (click)="authService.logout()">Cerrar Sesión</a>
+			</li>
+		} @else {
+			<li class="list-item">
+				<a href="/home">Inicio</a>
+			</li>
+			<li class="list-item">
 			<a href="/sign-up">Registrarse</a>
-		</li>
-		<li class="list-item">
-			<a href="/login">Iniciar Sesion</a>
-		</li>
+			</li>
+			<li class="list-item">
+				<a href="/login">Iniciar Sesion</a>
+			</li>
+		}
 	</ul>
 </nav>

@@ -38,7 +38,7 @@ export class ProfileManagement implements OnInit {
         username: user.name,
         profileImage: user.profilePicture
       });
-      this.profileImagePreview = user.profilePicture || 'profile.jpg';
+      this.profileImagePreview = user.profilePicture || 'assets/profile.jpg';
     }else{
       this.router.navigate(['/login']);
     }
@@ -73,7 +73,7 @@ export class ProfileManagement implements OnInit {
     }
 
     const updatedData = {
-      username: username!,
+      name: username!,
       profilePicture: profileImage!,
       ...(password ? { password } : {})
     };

@@ -13,7 +13,7 @@ export class AuthService {
 
   private _token = signal<string | null>(localStorage.getItem('token'));
 
-  private _currentUser = signal<User | null>(this.decodeAndGetUser());
+  private _currentUser = signal<User | null>(this.initializeUser());
   
   public currentUser = computed(() => this._currentUser());
   public isLoggedIn = computed(() => !!this._token());
@@ -59,15 +59,24 @@ export class AuthService {
     this.router.navigate(['/home']);
   }
 
+  private initializeUser(): User | null {
+    const savedUser = localStorage.getItem('user');
+    
+    if (savedUser) {
+      const user = JSON.parse(savedUser);
+      return user as User;
+    }
+
+    return this.decodeAndGetUser();
+  }
+
   private decodeAndGetUser(): User | null {
     const token = this._token();
     if (!token) return null;
 
     try {
-      // Decodificamos el Payload del JWT
       const decoded: any = jwtDecode(token);
 
-      // Verificamos si el token ha expirado
       const currentTime = Math.floor(Date.now() / 1000);
       if (decoded.exp && decoded.exp < currentTime) {
         this.logout();
@@ -88,5 +97,19 @@ export class AuthService {
       return null;
     }
   }
+
+  public updateCurrentUser(user: User, newToken?: string) {
+    this._currentUser.set(user);
+
+    localStorage.setItem('user', JSON.stringify(user));
+
+    if (newToken) {
+      this._token.set(newToken);
+      localStorage.setItem('token', newToken);
+    }
+
+  }
+
+  
 
 }

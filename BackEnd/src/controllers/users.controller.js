@@ -1,6 +1,7 @@
 const { response, request } = require('express');
 const User = require('../models/user.model');
 const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 
 const getUsers = async (req = request, res = response) => {
     try {
@@ -67,12 +68,27 @@ const updateUser = async (req = request, res = response) => {
         if (!userUpdated) {
             return res.status(404).json({ message: 'User not found' });
         }
-
-        res.status(200).json({ 
-            message: 'User updated successfully',
-            user: userUpdated 
-        });
-
+        
+        jwt.sign({
+            id: userUpdated.id,
+            name: userUpdated.name,
+            role: userUpdated.role,
+            profilePicture: userUpdated.profilePicture,
+        }, process.env.SECRET_KEY, 
+        { expiresIn: '4h' }, (error, token)=>{
+            if (error) {
+                console.log(error);
+                return res.status(500).json({
+                    message: 'Error occurred while generating token'
+                });
+            }
+        
+            res.status(200).json({ 
+                message: 'Login successful',
+                token,
+                user: userUpdated 
+            });
+        })
     } catch (error) {
         console.log(error);
         res.status(500).json({

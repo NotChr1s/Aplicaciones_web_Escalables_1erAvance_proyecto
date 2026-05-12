@@ -13,8 +13,12 @@ export class UserService {
   private authService = inject(AuthService); 
   private apiUrl = 'http://localhost:8081/api/users';
 
-  private _user = signal<User | null>(null);
-  public user = this._user.asReadonly();
+  private _activeUser = signal<User | null>(null);
+  public activeUser = this._activeUser.asReadonly();
+
+  setActiveUser(user: User | null) {
+    this._activeUser.set(user);
+  }
 
   private getHeaders() {
     return new HttpHeaders({
@@ -30,9 +34,11 @@ export class UserService {
     return this.http.put<any>(`${this.apiUrl}/${userId}`, data, { headers: this.getHeaders() })
       .pipe(
         tap(response => {
-          const userToSet = response.user || response; 
-          if (this._user()?.id === userId) {
-            this._user.set(userToSet);
+          const updatedUser = response.user;
+          this._activeUser.set(updatedUser);
+
+          if (this.authService.currentUser()?.id === userId) {
+            this.authService.updateCurrentUser(updatedUser, response.token);
           }
         })
       );
@@ -43,11 +49,12 @@ export class UserService {
     return this.http.delete(`${this.apiUrl}/${userId}`, { headers: this.getHeaders() })
       .pipe(
         tap(() => {
-          if (this._user()?.id === userId) {
-            this._user.set(null);
-            this.authService.logout(); // Limpiar token y redirigir
+          if (this._activeUser()?.id === userId) {
+            this._activeUser.set(null);
+            this.authService.logout(); 
           }
         })
       );
   }
+
 }

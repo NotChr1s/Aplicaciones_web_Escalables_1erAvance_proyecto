@@ -1,0 +1,67 @@
+<div class="admin-container">
+  <h1>Añadir Nuevo juego </h1>
+  
+  <form [formGroup]="gameForm" (ngSubmit)="saveGame()">
+
+    <div class="field">
+      <label>Portada del Juego</label>
+      <input type="file" (change)="onFileSelected($event)" accept="image/*" required>
+      <img *ngIf="imagePreview" [src]="imagePreview" class="cover-preview">
+    </div>
+
+    <div class="field">
+      <label>Título</label>
+      <input type="text" formControlName="title" placeholder="Ej: Assassin's Creed Shadows">
+    </div>
+
+    <div class="field">
+      <label>Duración (horas)</label>
+      <input type="number" formControlName="duration" placeholder="Ej: 31">
+    </div>
+
+    <div class="field">
+      <label>Calificacion de IGN</label>
+      <input type="number" formControlName="ignScore" placeholder="Ej: 8.5">
+    </div>
+
+    
+    <div class="field checkbox-group">
+      <label>Géneros</label>
+      <div class="checkbox-options">
+        <label *ngFor="let genre of genresList" class="checkbox-item">
+          <input type="checkbox" (change)="onCheckChange($event, genresArray, genre)">
+          <span>{{ genre }}</span>
+        </label>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Desarrolladores</label>
+      <input type="text" formControlName="developers" placeholder="Ej: Ubisoft">
+    </div>
+
+    <div class="field">
+      <label>Editores</label>
+      <input type="text" formControlName="editors" placeholder="Ej: Ubisoft">
+    </div>
+
+
+    <div class="field checkbox-group">
+      <label>Plataformas</label>
+      <div class="checkbox-options">
+        <label *ngFor="let platform of platformsList" class="checkbox-item">
+          <input type="checkbox" (change)="onCheckChange($event, platformsArray, platform)">
+          <span>{{ platform }}</span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Descripción -->
+    <div class="field">
+      <label>Descripción</label>
+      <textarea formControlName="description"></textarea>
+    </div>
+
+    <button type="submit" [disabled]="gameForm.invalid || !gameForm.get('imageImage')?.value">Guardar</button>
+  </form>
+</div>

@@ -44,8 +44,6 @@
   border-bottom: 1px solid white;
 }
 
-/* --- ESTILOS DEL FORMULARIO --- */
-
 form {
   margin-top: 20px;
 }
@@ -82,7 +80,6 @@ form select:focus {
   border-color: #10adfc;
 }
 
-/* Estilo especial para el checkbox de mostrar contraseña */
 .checkbox-group {
   display: flex;
   align-items: center;

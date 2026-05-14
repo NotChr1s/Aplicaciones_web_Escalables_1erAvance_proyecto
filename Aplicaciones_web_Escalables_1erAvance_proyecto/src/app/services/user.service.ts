@@ -12,7 +12,6 @@ export class UserService {
   private http = inject(HttpClient);
   private authService = inject(AuthService); 
   private apiUrl = 'http://localhost:8081/api/users';
-
   private _activeUser = signal<User | null>(null);
   public activeUser = this._activeUser.asReadonly();
 
@@ -43,7 +42,6 @@ export class UserService {
         })
       );
   }
-
 
   deleteUser(userId: string) {
     return this.http.delete(`${this.apiUrl}/${userId}`, { headers: this.getHeaders() })

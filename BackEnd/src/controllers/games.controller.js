@@ -12,39 +12,40 @@ const getGames = async (req = request, res = response) => {
     catch (error) {
       console.log(error);
       res.status(500).json({
-        message: 'Error en el servidor'
+        message: 'server error',
       });
     }
 };
 
 const createGame = async (req, res) => {
     try {
-        // El ID automático (G0001...) 
+        //generar el siguiente ID
         const lastGame = await Game.findOne().sort({ id: -1 });
         let nextId = "G0001";
+        // Si hay un juego existente, incrementamos el ID
         if (lastGame) {
+            // Extraemos la parte numerica del ID, incrementamos y formateamos de nuevo
             const numericPart = parseInt(lastGame.id.substring(1));
             nextId = `G${(numericPart + 1).toString().padStart(4, '0')}`;
         }
 
-        // Aquí desestructuras req.body directamente, sin JSON.parse
         const { title, duration, genres, developers, editors, platforms, description, ignScore, imageUrl } = req.body;
 
         const newGame = new Game({
             id: nextId,
             title,
             duration,
-            genres, // Ya viene como array del TS
+            genres, 
             developers,
             editors,
-            platforms, // Ya viene como array del TS
+            platforms, 
             description,
             ignScore,
-            imageUrl // Aquí se guarda el Base64 directamente en MongoDB
+            imageUrl 
         });
 
         await newGame.save();
-        res.status(201).json({ message: "Juego creado", game: newGame });
+        res.status(201).json({ message: "game created", game: newGame });
 
     } catch (error) {
         res.status(500).json({ message: "Error:", error: error.message });

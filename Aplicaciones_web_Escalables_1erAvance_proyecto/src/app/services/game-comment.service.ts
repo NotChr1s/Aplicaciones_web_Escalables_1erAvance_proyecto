@@ -35,6 +35,7 @@ export class GameCommentService {
   });
 }
 
+  // Función para formatear la respuesta del backend a un GameComment
   private formatComment(data: any): GameComment {
     return {
       
@@ -46,6 +47,7 @@ export class GameCommentService {
     };
   }
 
+  // Función para obtener los headers con el token de autenticación
   private getHeaders() {
     return new HttpHeaders({
       'Authorization': `Bearer ${this.authService.getToken()}`

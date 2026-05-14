@@ -8,10 +8,8 @@
       (blur)="hideResults()"
       (focus)="onSearch(txtSearch.value)"
       required>
-    <!-- solo se muestran resultados si hay juegos en el array -->
     @if (showResults() && this.gameService.filteredGames().length > 0) {
       <ul class="results-list">
-        <!-- se muestran los primeros 6 juegos filtrados por el termino de la busqueda -->
         @for (game of this.gameService.filteredGames().slice(0, 6); track game.id) {
           <li (click)="goToGame(game.id)">
             <img [src]="game.imageUrl" alt="cover">

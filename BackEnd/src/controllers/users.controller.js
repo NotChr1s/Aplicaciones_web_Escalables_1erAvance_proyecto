@@ -52,17 +52,15 @@ const createUser = async (req = request, res = response) => {
 const updateUser = async (req = request, res = response) => {
     
     const { id } = req.params;
-    console.log('ID recibido en el controlador:', id);
     const { password, ...restData } = req.body;
-    console.log('Datos recibidos para actualización:', restData, 'Contraseña:', password);
-
+    
     try {
         //volver a hashear la contraseña si se está actualizando
         if (password && password.length > 0) {
             restData.password = await bcrypt.hash(password, 10)
         }
 
-        //actualizar el usuario y retornar el nuevo documento actualizado
+        //actualizar el usuario y retornar el nuevo actualizado
         const userUpdated = await User.findOneAndUpdate({ id: id }, restData, { new: true });
 
         if (!userUpdated) {

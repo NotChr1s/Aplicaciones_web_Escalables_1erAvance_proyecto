@@ -11,11 +11,8 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './games-list.css',
 })
 export class GamesList {
- 
-  // Inyección de dependencias
   private GameListService = inject(GameListService);
   private router = inject(Router);
-
   activeTab = signal<string>('Todos');
   private authService = inject(AuthService);
   

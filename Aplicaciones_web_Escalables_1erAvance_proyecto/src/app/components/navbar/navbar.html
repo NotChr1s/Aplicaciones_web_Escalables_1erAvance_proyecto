@@ -5,22 +5,34 @@
 	<ul class="nav-list" id="navi-list">
 
 		@if (authService.isLoggedIn()) {
-			<li class="list-item">
-				<a href="/profile">Mi Perfil</a>
-			</li>
-			<li class="list-item">
-				<a href="/home" (click)="authService.logout()">Cerrar Sesión</a>
-			</li>
+			@if(authService.currentUser()?.role === 'admin') {
+				<li class="list-item">
+					<a href="/add-game">Añadir juego</a>
+				</li>
+				<li class="list-item">
+					<a href="/profile">Mi Perfil</a>
+				</li>
+				<li class="list-item">
+					<a href="/home" (click)="authService.logout()">Cerrar Sesión</a>
+				</li>
+			}@else{
+				<li class="list-item">
+					<a href="/profile">Mi Perfil</a>
+				</li>
+				<li class="list-item">
+					<a href="/home" (click)="authService.logout()">Cerrar Sesión</a>
+				</li>
+			}
 		} @else {
-			<li class="list-item">
-				<a href="/home">Inicio</a>
-			</li>
-			<li class="list-item">
-			<a href="/sign-up">Registrarse</a>
-			</li>
-			<li class="list-item">
-				<a href="/login">Iniciar Sesion</a>
-			</li>
+				<li class="list-item">
+					<a href="/home">Inicio</a>
+				</li>
+				<li class="list-item">
+					<a href="/sign-up">Registrarse</a>
+				</li>
+				<li class="list-item">
+					<a href="/login">Iniciar Sesion</a>
+				</li>
 		}
 	</ul>
 </nav>

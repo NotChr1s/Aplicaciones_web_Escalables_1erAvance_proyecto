@@ -11,7 +11,6 @@ export class GameService {
   private http = inject(HttpClient);
   private apiUrl = 'http://localhost:8081/api/games';
   private authService = inject(AuthService);
-
   private _games = signal<Game[]>([]);
   public games = this._games.asReadonly();
   public searchQuery = signal<string>('');

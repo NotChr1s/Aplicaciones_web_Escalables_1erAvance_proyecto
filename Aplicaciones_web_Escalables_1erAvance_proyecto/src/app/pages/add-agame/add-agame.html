@@ -1,12 +1,15 @@
 <div class="admin-container">
-  <h1>Añadir Nuevo juego </h1>
-  
+  <h1>Añadir Nuevo juego</h1>
+
   <form [formGroup]="gameForm" (ngSubmit)="saveGame()">
 
     <div class="field">
       <label>Portada del Juego</label>
       <input type="file" (change)="onFileSelected($event)" accept="image/*" required>
-      <img *ngIf="imagePreview" [src]="imagePreview" class="cover-preview">
+      
+      @if (imagePreview) {
+        <img [src]="imagePreview" class="cover-preview">
+      }
     </div>
 
     <div class="field">
@@ -24,14 +27,15 @@
       <input type="number" formControlName="ignScore" placeholder="Ej: 8.5">
     </div>
 
-    
     <div class="field checkbox-group">
       <label>Géneros</label>
       <div class="checkbox-options">
-        <label *ngFor="let genre of genresList" class="checkbox-item">
-          <input type="checkbox" (change)="onCheckChange($event, genresArray, genre)">
-          <span>{{ genre }}</span>
-        </label>
+        @for (genre of genresList; track genre) {
+          <label class="checkbox-item">
+            <input type="checkbox" (change)="onCheckChange($event, genresArray, genre)">
+            <span>{{ genre }}</span>
+          </label>
+        }
       </div>
     </div>
 
@@ -45,23 +49,25 @@
       <input type="text" formControlName="editors" placeholder="Ej: Ubisoft">
     </div>
 
-
     <div class="field checkbox-group">
       <label>Plataformas</label>
       <div class="checkbox-options">
-        <label *ngFor="let platform of platformsList" class="checkbox-item">
-          <input type="checkbox" (change)="onCheckChange($event, platformsArray, platform)">
-          <span>{{ platform }}</span>
-        </label>
+        @for (platform of platformsList; track platform) {
+          <label class="checkbox-item">
+            <input type="checkbox" (change)="onCheckChange($event, platformsArray, platform)">
+            <span>{{ platform }}</span>
+          </label>
+        }
       </div>
     </div>
 
-    <!-- Descripción -->
     <div class="field">
       <label>Descripción</label>
       <textarea formControlName="description"></textarea>
     </div>
 
-    <button type="submit" [disabled]="gameForm.invalid || !gameForm.get('imageImage')?.value">Guardar</button>
+    <button type="submit" [disabled]="gameForm.invalid || !gameForm.get('imageImage')?.value">
+      Guardar
+    </button>
   </form>
 </div>

@@ -59,9 +59,6 @@ export class GameDetail {
       date: new Date().toISOString(), // Fecha actual
       text: this.newCommentText // El texto del nuevo comentario
     };
-
-    console.log('Nuevo comentario:', comment); // Verifica que el comentario se ha creado correctamente
-
     this.GameCommentService.addComment(comment);//Añade el comentario atraves del servicio
     //Actualizamos la lista de comentarios para ver el nuevo comentario agregado
     this.newCommentText = ''; // Limpia el input

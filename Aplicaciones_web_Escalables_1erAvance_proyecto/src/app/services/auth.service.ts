@@ -10,11 +10,8 @@ import { jwtDecode } from 'jwt-decode';
 export class AuthService {
   private http = inject(HttpClient);
   private router = inject(Router);
-
   private _token = signal<string | null>(localStorage.getItem('token'));
-
   private _currentUser = signal<User | null>(this.initializeUser());
-  
   public currentUser = computed(() => this._currentUser());
   public isLoggedIn = computed(() => !!this._token());
   public isLoading = signal(false);
@@ -59,6 +56,7 @@ export class AuthService {
     this.router.navigate(['/home']);
   }
 
+  // Función para inicializar el usuario a partir del localStorage
   private initializeUser(): User | null {
     const savedUser = localStorage.getItem('user');
     
@@ -70,6 +68,7 @@ export class AuthService {
     return this.decodeAndGetUser();
   }
 
+  // Función para decodificar el token JWT y obtener la información del usuario
   private decodeAndGetUser(): User | null {
     const token = this._token();
     if (!token) return null;
@@ -98,6 +97,7 @@ export class AuthService {
     }
   }
 
+  // Función para actualizar la información del usuario actual y opcionalmente el token
   public updateCurrentUser(user: User, newToken?: string) {
     this._currentUser.set(user);
 

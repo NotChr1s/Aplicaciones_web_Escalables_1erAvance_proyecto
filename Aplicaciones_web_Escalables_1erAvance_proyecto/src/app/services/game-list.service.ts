@@ -8,11 +8,8 @@ import { AuthService } from './auth.service';
 })
 export class GameListService {
   private http = inject(HttpClient);
-
   private _list = signal<UserGame[]>([]);
-
   public list = this._list.asReadonly();
-
   private authService = inject(AuthService);
   private apiUrl = 'http://localhost:8081/api/gameslist';
 

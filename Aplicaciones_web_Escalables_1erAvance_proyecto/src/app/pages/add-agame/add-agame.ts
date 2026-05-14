@@ -2,7 +2,7 @@ import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormArray, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
-import { GameService } from '../../services/game.service'; // Asegúrate de tener este servicio
+import { GameService } from '../../services/game.service'; 
 import { AuthService } from '../../services/auth.service';
 
 @Component({
@@ -13,7 +13,6 @@ import { AuthService } from '../../services/auth.service';
   styleUrl: './add-agame.css',
 })
 export class AddGame implements OnInit {
-  // Inyectamos los servicios necesarios
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private gameService = inject(GameService);
@@ -23,7 +22,7 @@ export class AddGame implements OnInit {
   genresList = ['Acción', 'Aventura', 'RPG', 'Estrategia', 'Mundo abierto', 'Deportes', 'Simulación', 'Terror', 'Multijugador'];
   platformsList = ['PC', 'PS5', 'Xbox Series X/S', 'Switch', 'PS4'];
 
-  // Definición del Formulario siguiendo tu estilo
+  // Definición del Formulario
   gameForm = this.fb.group({
     title: ['', [Validators.required]],
     duration: [0, [Validators.required, Validators.min(1)]],
@@ -37,9 +36,9 @@ export class AddGame implements OnInit {
   });
 
   // Variable para la previsualización
-  imagePreview: string | ArrayBuffer | null = 'logo.png';
+  imagePreview: string | ArrayBuffer | null = 'add_game.jpg';
 
-  // Getters para los FormArrays (indispensables para los checkboxes)
+  // Getters para los FormArrays
   get genresArray() { return this.gameForm.get('genres') as FormArray; }
   get platformsArray() { return this.gameForm.get('platforms') as FormArray; }
 
@@ -52,7 +51,6 @@ export class AddGame implements OnInit {
     }
   }
 
-  // Misma lógica de archivos que usaste en ProfileManagement
   onFileSelected(event: any) {
     const file = event.target.files[0];
     if (file) {
@@ -76,7 +74,6 @@ export class AddGame implements OnInit {
     }
   }
 
- //Esto es una funcion
   saveGame() {
     if (this.gameForm.invalid) {
       alert('Por favor, llena todos los campos obligatorios.');
@@ -86,20 +83,19 @@ export class AddGame implements OnInit {
     // Extraemos los valores del formulario
     const { title, duration, genres, developers, editors, platforms, description, ignScore, imageImage } = this.gameForm.value;
 
-    // Construimos el objeto final (Metodología idéntica a updatedData de tu perfil)
     const gameData = {
       title: title!,
       duration: duration!,
-      genres: genres!, // Ya es un arreglo por el FormArray
+      genres: genres!, 
       developers: developers!,
       editors: editors!,
-      platforms: platforms!, // Ya es un arreglo por el FormArray
+      platforms: platforms!,
       description: description!,
       ignScore: ignScore!,
-      imageUrl: imageImage! // Enviamos el string Base64
+      imageUrl: imageImage! 
     };
 
-    // Llamada al servicio (Igual que userService.updateUser)
+    // Llamada al servicio 
     this.gameService.createGame(gameData).subscribe({
       next: () => {
         alert('Juego creado exitosamente');

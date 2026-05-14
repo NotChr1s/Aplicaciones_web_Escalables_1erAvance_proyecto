@@ -76,7 +76,7 @@
 
         @if(authService.isLoggedIn()) {
           <form (submit)="postComment($event)" class="comment-form">
-          <img src="profile.jpg" alt="Tu avatar" class="user-avatar-small">
+          <img src="{{ authService.currentUser()?.profilePicture }}" alt="Tu avatar" class="user-avatar-small">
           <div class="input-wrapper">
               <textarea 
               [(ngModel)]="newCommentText" 

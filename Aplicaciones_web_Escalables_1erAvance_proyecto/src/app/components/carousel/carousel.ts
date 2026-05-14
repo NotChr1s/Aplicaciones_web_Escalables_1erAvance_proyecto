@@ -14,7 +14,7 @@ export class Carousel implements OnInit {
   // Variables para controlar el estado del carrusel
   currentIndex: number = 0;       // indice actual
   itemWidth: number = 320;        // Ancho de cada .module + margin (aprox 300+20)
-  itemsToShow: number = 4;        // cantidad de juegos para mostrar a la vez
+  itemsToShow: number = 5;        // cantidad de juegos para mostrar a la vez
   translateX: number = 0;         // El valor del transform CSS
 
   constructor() { }

@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { UserService } from '../../services/user.service';
 import { User } from '../../interfaces/user.interface';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-sign-up',
@@ -11,7 +12,8 @@ import { User } from '../../interfaces/user.interface';
   templateUrl: './sign-up.html',
   styleUrl: './sign-up.css',
 })
-export class SignUp {
+export class SignUp implements OnInit {
+  private authService = inject(AuthService);
   // Campos del formulario de registro
   userData = {
     name: '',
@@ -35,6 +37,12 @@ export class SignUp {
   years: number[] = Array.from({ length: 57 }, (_, i) => 2026 - i);
 
   constructor(private router: Router, private userService: UserService) {}
+
+  ngOnInit(): void {
+    if(this.authService.isLoggedIn()) {
+      this.router.navigate(['/profile']);
+    }
+  }
 
   // Alternar la visibilidad de la contraseña
   togglePassword() {

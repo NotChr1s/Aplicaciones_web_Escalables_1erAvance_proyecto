@@ -73,7 +73,6 @@ const updateUser = async (req = request, res = response) => {
             id: userUpdated.id,
             name: userUpdated.name,
             role: userUpdated.role,
-            profilePicture: userUpdated.profilePicture,
         }, process.env.SECRET_KEY, 
         { expiresIn: '4h' }, (error, token)=>{
             if (error) {

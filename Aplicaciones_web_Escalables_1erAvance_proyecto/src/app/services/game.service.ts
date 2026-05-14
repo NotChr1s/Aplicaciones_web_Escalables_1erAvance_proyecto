@@ -32,7 +32,7 @@ export class GameService {
     return computed(() => {
       // Filtramos los juegos que tienen una puntuación IGN mayor a 0 (asumiendo que los juegos con puntuación 0 son los próximos lanzamientos)
       const filtered = this.games().filter(g => g.ignScore > 0);
-      return this.getRandomItems(filtered, 5);
+      return this.getRandomItems(filtered, 7);
     });
   }
 
@@ -40,7 +40,7 @@ export class GameService {
   getUpcomingGames() {
     return computed(() => {
       const filtered = this.games().filter(g => g.ignScore === 0);
-      return this.getRandomItems(filtered, 5);
+      return this.getRandomItems(filtered, 7);
     });
   }
 

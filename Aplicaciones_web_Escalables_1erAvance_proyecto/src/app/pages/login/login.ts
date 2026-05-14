@@ -1,5 +1,5 @@
-import { Component, inject } from '@angular/core';
-import { RouterLink } from "@angular/router";
+import { Component, inject, OnInit } from '@angular/core';
+import { Router, RouterLink } from "@angular/router";
 import { AuthService } from '../../services/auth.service';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 
@@ -11,9 +11,10 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
   templateUrl: './login.html',
   styleUrl: './login.css',
 })
-export class Login {
+export class Login implements OnInit {
   private fb = inject(FormBuilder);
   public authService = inject(AuthService);
+  private router = inject(Router);
 
   loginForm = this.fb.group({
     name: ['', Validators.required],
@@ -23,6 +24,12 @@ export class Login {
   onLogin() {
     if (this.loginForm.valid) {
       this.authService.login(this.loginForm.value.name!, this.loginForm.value.password!);
+    }
+  }
+
+  ngOnInit(): void {
+    if(this.authService.isLoggedIn()) {
+      this.router.navigate(['/profile']);
     }
   }
 }

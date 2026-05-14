@@ -2,7 +2,6 @@
     <div class="profile">
         <img [src]="authService.currentUser()?.profilePicture | safeImg" alt="Imagen de Perfil" class="circular-image">
         <h2 class="username">{{ authService.currentUser()?.name }}</h2>
-        <h2 class="username">{{ authService.currentUser()?.id }}</h2>
 
         <div class="buttons">
             <button routerLink="/profile-management">

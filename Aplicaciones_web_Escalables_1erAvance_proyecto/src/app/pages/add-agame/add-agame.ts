@@ -1,8 +1,9 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormsModule, ReactiveFormsModule, Validators, FormArray, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { GameService } from '../../services/game.service'; // Asegúrate de tener este servicio
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-add-game',
@@ -11,11 +12,12 @@ import { GameService } from '../../services/game.service'; // Asegúrate de tene
   templateUrl: './add-agame.html',
   styleUrl: './add-agame.css',
 })
-export class AddGame {
+export class AddGame implements OnInit {
   // Inyectamos los servicios necesarios
   private fb = inject(FormBuilder);
   private router = inject(Router);
   private gameService = inject(GameService);
+  private authService = inject(AuthService);
 
   // Listas para los checkboxes
   genresList = ['Acción', 'Aventura', 'RPG', 'Estrategia', 'Mundo abierto', 'Deportes', 'Simulación', 'Terror', 'Multijugador'];
@@ -40,6 +42,15 @@ export class AddGame {
   // Getters para los FormArrays (indispensables para los checkboxes)
   get genresArray() { return this.gameForm.get('genres') as FormArray; }
   get platformsArray() { return this.gameForm.get('platforms') as FormArray; }
+
+  ngOnInit(): void {
+    if(!this.authService.isLoggedIn()) {
+      this.router.navigate(['/home']);
+    }
+    if(this.authService.currentUser()?.role !== 'admin') {
+      this.router.navigate(['/home']);
+    }
+  }
 
   // Misma lógica de archivos que usaste en ProfileManagement
   onFileSelected(event: any) {
@@ -91,7 +102,8 @@ export class AddGame {
     // Llamada al servicio (Igual que userService.updateUser)
     this.gameService.createGame(gameData).subscribe({
       next: () => {
-        alert('¡Videojuego creado con éxito!');
+        alert('Juego creado exitosamente');
+        this.router.navigate(['/home']);
       },
       error: (err) => {
         console.error('Error al crear:', err);

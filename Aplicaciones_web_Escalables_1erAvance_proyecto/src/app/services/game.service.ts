@@ -1,6 +1,7 @@
 import { Injectable, signal,computed, inject } from '@angular/core';
 import { Game } from '../interfaces/game.interface';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
+import { AuthService } from './auth.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +9,9 @@ import { HttpClient } from '@angular/common/http';
 export class GameService {
   //atributos
   private http = inject(HttpClient);
+  private apiUrl = 'http://localhost:8081/api/games';
+  private authService = inject(AuthService);
+
   private _games = signal<Game[]>([]);
   public games = this._games.asReadonly();
   public searchQuery = signal<string>('');
@@ -52,7 +56,7 @@ export class GameService {
 
   // Función para obtener la lista completa de juegos desde el backend
   fetchGames(): void {
-    this.http.get<Game[]>('http://localhost:8081/api/games').subscribe({
+    this.http.get<Game[]>(this.apiUrl).subscribe({
       next: (response: Game[]) => {
         this._games.set(response);
       },
@@ -69,4 +73,15 @@ export class GameService {
       return this.games().find(g => g.id.toString() === id.toString());
     });
   }
+
+  private getHeaders() {
+    return new HttpHeaders({
+      'Authorization': `Bearer ${this.authService.getToken()}`
+    });
+  }
+
+  createGame(gameData: any) {
+    return this.http.post(this.apiUrl, gameData, { headers: this.getHeaders() });
+  }
+
 }

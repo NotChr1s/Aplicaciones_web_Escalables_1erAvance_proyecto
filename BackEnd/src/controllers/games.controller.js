@@ -17,23 +17,39 @@ const getGames = async (req = request, res = response) => {
     }
 };
 
-const createGame = (req = request, res = response) => {
+const createGame = async (req, res) => {
+    try {
+        // El ID automático (G0001...) 
+        const lastGame = await Game.findOne().sort({ id: -1 });
+        let nextId = "G0001";
+        if (lastGame) {
+            const numericPart = parseInt(lastGame.id.substring(1));
+            nextId = `G${(numericPart + 1).toString().padStart(4, '0')}`;
+        }
 
-    const { name, genre } = req.body;
+        // Aquí desestructuras req.body directamente, sin JSON.parse
+        const { title, duration, genres, developers, editors, platforms, description, ignScore, imageUrl } = req.body;
 
-    if(!name  || !genre){
-        res.status(400).json({ 
-            message: 'data is required' 
-        })
-        return;
+        const newGame = new Game({
+            id: nextId,
+            title,
+            duration,
+            genres, // Ya viene como array del TS
+            developers,
+            editors,
+            platforms, // Ya viene como array del TS
+            description,
+            ignScore,
+            imageUrl // Aquí se guarda el Base64 directamente en MongoDB
+        });
+
+        await newGame.save();
+        res.status(201).json({ message: "Juego creado", game: newGame });
+
+    } catch (error) {
+        res.status(500).json({ message: "Error:", error: error.message });
     }
-
-    res.status(200).json({ 
-        message: 'Post  games', 
-        name,
-        genre
-    });
-};
+}
 
 const updateGame = (req = request, res = response) => {
     res.status(200).json({ 

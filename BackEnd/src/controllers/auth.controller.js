@@ -32,7 +32,6 @@ const login = async (req = request, res = response) => {
             id: user.id,
             name: user.name,
             role: user.role,
-            profilePicture: user.profilePicture,
         }, process.env.SECRET_KEY, 
         { expiresIn: '4h' }, (error, token)=>{
             if (error) {
@@ -41,10 +40,11 @@ const login = async (req = request, res = response) => {
                     message: 'Error occurred while generating token'
                 });
             }
-
+            console.log(user);
             res.status(200).json({ 
                 message: 'Login successful',
-                token
+                token,
+                user
             });
         })
 

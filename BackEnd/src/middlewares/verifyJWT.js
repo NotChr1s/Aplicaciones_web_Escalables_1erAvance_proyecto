@@ -18,8 +18,9 @@ const verifyJWT = async ( req = request, res = response, next) => {
     : authHeader;
 
     try {
-        const {name} = jwt.verify(token, process.env.SECRET_KEY);
-        const user = await User.findOne({ name: name });
+        const {id} = jwt.verify(token, process.env.SECRET_KEY);
+        console.log(id);
+        const user = await User.findOne({ id: id });
         if (!user) {
             return res.status(401).json({
                 message: 'Invalid token'

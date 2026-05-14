@@ -65,6 +65,7 @@ export class AddGame {
     }
   }
 
+ //Esto es una funcion
   saveGame() {
     if (this.gameForm.invalid) {
       alert('Por favor, llena todos los campos obligatorios.');

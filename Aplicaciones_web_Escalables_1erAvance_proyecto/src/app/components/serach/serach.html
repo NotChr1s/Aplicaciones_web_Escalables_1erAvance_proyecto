@@ -1,6 +1,29 @@
 <article class="search">
-        <div class="search-container">
-            <input type="text" placeholder="Super Mario..." name="query" required>
-            <button type="submit">Buscar</button>
-        </div>
+  <div class="search-container">
+    <input 
+      #txtSearch
+      type="text" 
+      placeholder="Buscar videojuego..." 
+      (input)="onSearch(txtSearch.value)"
+      (blur)="hideResults()"
+      (focus)="onSearch(txtSearch.value)"
+      required>
+    <!-- solo se muestran resultados si hay juegos en el array -->
+    @if (showResults() && this.gameService.filteredGames().length > 0) {
+      <ul class="results-list">
+        <!-- se muestran los primeros 6 juegos filtrados por el termino de la busqueda -->
+        @for (game of this.gameService.filteredGames().slice(0, 6); track game.id) {
+          <li (click)="goToGame(game.id)">
+            <img [src]="game.imageUrl" alt="cover">
+            <div class="info">
+              <span class="title">{{ game.title }}</span>
+              <span class="details">{{ game.developers }} | {{ game.duration }}h</span>
+            </div>
+          </li>
+        } @empty {
+          <li class="no-results">No se encontraron juegos</li>
+        }
+      </ul>
+    }
+  </div>
 </article>

@@ -53,42 +53,6 @@ const addGame = async (req = request, res = response) => {
     }
 };
 
-const updateGameinList = async (req = request, res = response) => {
-
-    const { id, userId, gameId, name, image, score, status } = req.body;
-    console.log(id, userId, gameId, name, image, score, status);
-
-    if(!id || !userId || !gameId || !name || !image || score === undefined || !status){
-        res.status(400).json({ 
-            message: 'data is required' 
-            
-        })
-        return;
-    }
-
-    try{
-        const updatedGame = await GameList.findOneAndUpdate(
-            { id },
-            { userId, gameId, name, image, score, status },
-            { new: true }
-        );
-        if (!updatedGame) {
-            return res.status(404).json({
-                message: 'Game not found'
-            });
-        }
-        res.status(200).json({
-            message: 'Game updated successfully',
-            game: updatedGame
-        });
-    }catch(error){
-        console.log(error);
-        res.status(500).json({
-            message: 'Error updating game'
-        });
-    }
-};
-
 const deleteGameinList = async (req = request, res = response) => {
     const { gameId } = req.params;
 
@@ -118,9 +82,42 @@ const deleteGameinList = async (req = request, res = response) => {
     }
 };
 
+const updateSpecificFields = async (req = request, res = response) => {
+    try {
+        const { id } = req.params; 
+        const fieldsToUpdate = req.body;
+
+        if (Object.keys(fieldsToUpdate).length === 0) {
+            return res.status(400).json({ message: "No fields provided for update" });
+        }
+
+        const updatedUserGame = await GameList.findOneAndUpdate(
+            { id: id }, 
+            { $set: fieldsToUpdate }, // el $set solo aplica cambios a las llaves presentes en fieldsToUpdate
+            { 
+                new: true, // Devuelve el documento ya modificado
+                runValidators: true // Asegura que el status siga siendo uno de los permitidos
+            }
+        );
+
+        if (!updatedUserGame) {
+            return res.status(404).json({ message: "game not found" });
+        }
+
+        res.json({
+            message: "field(s) updated successfully",
+            game: updatedUserGame
+        });
+
+    } catch (error) {
+        console.error('patch error:', error);
+        res.status(500).json({ message: "Error updating field(s)", error: error.message });
+    }
+}
+
 module.exports = {
     getList,
     addGame,
-    updateGameinList,
-    deleteGameinList
+    deleteGameinList,
+    updateSpecificFields
 };

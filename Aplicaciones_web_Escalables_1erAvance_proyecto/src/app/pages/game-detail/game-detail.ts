@@ -8,6 +8,7 @@ import { GameCommentService } from '../../services/game-comment.service';
 import { GameListService } from '../../services/game-list.service';
 import { UserGame } from '../../interfaces/userGame.interface';
 import { AuthService } from '../../services/auth.service';
+import { find } from 'rxjs';
 
 @Component({
   selector: 'app-game-detail',
@@ -101,9 +102,7 @@ export class GameDetail {
     const currentGame = this.game();
     if (!currentGame) return 'plantoplay';
 
-    const userGame = this.GameListService.list().find(
-      g => String(g.gameId) === String(currentGame.id)
-    );
+    const userGame = this.findUserGame();
 
     if (userGame){
       switch (userGame.status) {
@@ -125,54 +124,38 @@ export class GameDetail {
 
   updateStatus(newStatus: string) {
     const statusTyped = newStatus as "Por jugar" | "Jugando" | "Finalizado" | "Abandonado";
-    const currentGame = this.game();
+    const userGame = this.findUserGame();
 
-    if (!currentGame) return;
+    if (!userGame) return;
 
-    // Buscamos el objeto completo
-    const userGame = this.GameListService.list().find(
-      g => String(g.gameId) === String(currentGame.id)
-    );
-
-    if (userGame) {
-      const updatedGame: UserGame = {
-        ...userGame,
-        status: statusTyped
-      };
-
-      this.GameListService.updateGameInList(updatedGame);
-    }
+    // mandamos el campo especifico de status y el campo que se va a actualiar
+    this.GameListService.updateGameFields(userGame.id, { status: statusTyped });
   }
 
   currentStatusScore = computed(() => {
-    const currentGame = this.game();
-    if (!currentGame) return 0;
-
-    const userGame = this.GameListService.list().find(
-      g => String(g.gameId) === String(currentGame.id)
-    );
+    const userGame = this.findUserGame();
 
     return userGame ? userGame.score : 0;
   });
 
   updateStatusScore(newScore: string) {
     const scoreTyped = parseInt(newScore);
+    const userGame = this.findUserGame();
+
+    if (!userGame) return;
+    console.log(userGame.id, scoreTyped);
+
+    // mandamos el campo especifico de score y el campo que se va a actualiar junto con el id del juego en la lista del usuario
+    this.GameListService.updateGameFields(userGame.id, { score: scoreTyped});
+  }
+
+  findUserGame() {
     const currentGame = this.game();
+    if (!currentGame) return 0;
 
-    if (!currentGame) return;
-
-    // Buscamos el objeto completo
     const userGame = this.GameListService.list().find(
       g => String(g.gameId) === String(currentGame.id)
     );
-
-    if (userGame) {
-      const updatedGame: UserGame = {
-        ...userGame,
-        score: scoreTyped
-      };
-
-      this.GameListService.updateGameInList(updatedGame);
-    }
+    return userGame;
   }
 }

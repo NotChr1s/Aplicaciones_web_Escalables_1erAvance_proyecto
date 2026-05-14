@@ -42,14 +42,17 @@ export class GameListService {
   
   // Agregar un juego a la lista del usuario
   addGameToList(game: UserGame) {
-    this.http.post<UserGame>(this.apiUrl, game, { headers: this.getHeaders() }).subscribe({
+    this.http.post<{message: string, game: UserGame}>(this.apiUrl, game, { headers: this.getHeaders() }).subscribe({
       next: (response) => {
+        const gameData = response.game; 
+
         const gameToSave = {
-          ...response,
-          gameId: String(response.gameId || game.gameId) 
+          ...gameData,
+          gameId: String(gameData.gameId || game.gameId) 
         };
 
         this._list.update(games => [...games, gameToSave]);
+        console.log('Juego guardado en el Signal correctamente');
       },
       error: (error) => console.log('Error al agregar:', error)
     });
@@ -70,18 +73,15 @@ export class GameListService {
     return this.list().some(game => game.gameId === gameId);
   }
 
-  updateGameInList(updatedGame: UserGame) {
-    this.http.put<UserGame>(this.apiUrl, updatedGame, { headers: this.getHeaders() }).subscribe({
-      next: (response) => {
-        const gameToSave = {
-          ...response,
-          gameId: String(response.gameId || updatedGame.gameId) 
-        };
-
-        this._list.update(games => [...games, gameToSave]);
-      },
-      error: (error) => console.log('Error al agregar:', error)
+  updateGameFields(id: string, fields: Partial<UserGame>) {
+    console.log('Actualizando juego con ID:', id, 'Campos:', fields);
+  return this.http.patch(`${this.apiUrl}/${id}`, fields, { headers: this.getHeaders() })
+    .subscribe({
+      next: (updatedFromServer) => {
+        this._list.update(currentList => 
+          currentList.map(g => g.id === id ? { ...g, ...fields } : g)
+        );
+      }
     });
-  }
-
+}
 }
